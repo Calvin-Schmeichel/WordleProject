@@ -1,69 +1,55 @@
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
     GREEN = '\u001b[32m'
     YELLOW = '\u001b[33m'
+    ENDC = '\033[0m'
 
-def  WordCheck(guess,word):
+
+def  WordCheck(guess,word,GuessHistory, index):
     for n in range(0,5):
         if word[n] == guess[n]:
-            print(f"{bcolors.GREEN}{guess[n]}{bcolors.ENDC}",end ="")
+            GuessHistory[index] += str(f"{bcolors.GREEN}{guess[n]}{bcolors.ENDC}")
         elif word.find(guess[n]) != -1:
-            print(f"{bcolors.YELLOW}{guess[n]}{bcolors.ENDC}",end ="")
+            GuessHistory[index] += str(f"{bcolors.YELLOW}{guess[n]}{bcolors.ENDC}")
         else:
-            print(guess[n],end ="")
+            GuessHistory[index] += guess[n]
 
 
-def WordFromUser(GuessHistory):
+def WordFromUser(WordHistory):
     guess = input(":")
     
-
-    while len(guess) != 5 or (guess in GuessHistory) == True:
+    while len(guess) != 5 or (guess in WordHistory) == True:
         print(f"{guess} already used or Not a 5 letter word")
         guess = input(":")
 
-        
-
-    #rint(guess in GuessHistory)
+    WordHistory.append(guess)
     
-    GuessHistory.append(guess)
-    
-    #print(guess)
     return guess
 
+
 def DrawGameBoard(GuessHistory, AttemptCount, word):
-    for n in GuessHistory:
-        WordCheck(n, word)
-        print()
+
+    for n in range(0,AttemptCount):
+        print(GuessHistory[n])
 
     for n in range(0, 6 - AttemptCount):
         print("▯▯▯▯▯")
 
 
 def main():
-    GuessHistory = []
+    #List of words used (No Color/Formatting)
+    WordHistory = []
+    #List of words (Color+Formatting)
+    GuessHistory = ["","","","","",""]
 
     print(f"{bcolors.GREEN}Welcome to Wordle enter a word{bcolors.ENDC}")
 
     word = "apple"
 
-    #print(word[0])
-
-    #print(word.find("a"))
-
     for AttemptCount in range(1,7):
-        guess = WordFromUser(GuessHistory)
+        guess = WordFromUser(WordHistory)
         print()
-        #WordCheck(guess,word)
+        WordCheck(guess,word,GuessHistory, AttemptCount-1)
         DrawGameBoard(GuessHistory, AttemptCount, word)
-        #print(GuessHistory)
 
 
 #This is so we can import the functions in this program in other code without having to run the main function
