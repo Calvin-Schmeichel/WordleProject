@@ -1,3 +1,31 @@
+import random
+import csv
+
+def random_line():
+
+    inputFile = open("possiblewords.csv", "r")
+
+    line = next(inputFile)
+    for num, aline in enumerate(inputFile, 2):
+        if random.randrange(num):
+            continue
+        line = aline
+
+    inputFile.close()
+    return line
+
+def ValidWord(Guess):
+    
+    with open('validwords.csv', 'rt') as f:
+        reader = csv.reader(f, delimiter=',')
+        for row in reader:
+            for field in row:
+                if field == Guess:
+                    return True
+                    
+                    
+    return False
+
 class bcolors:
     GREEN = '\u001b[32m'
     YELLOW = '\u001b[33m'
@@ -29,7 +57,7 @@ def WordCheck(WordLetterslist, guess, word, WordLetters, GuessHistory, index):
 def WordFromUser(WordHistory, GuessHistory):
     guess = input(":")
     
-    while len(guess) != 5 or (guess in WordHistory) == True:
+    while len(guess) != 5 or (guess in WordHistory) == True or (ValidWord(guess)) == False:
         print(f"{guess} already used or Not a 5 letter word")
         guess = input(":")
 
@@ -69,7 +97,10 @@ def main():
 
     print(f"{bcolors.GREEN}Welcome to Wordle enter a word{bcolors.ENDC}")
 
-    word = "bingo"
+    word = "right"
+    #word = random_line()
+    word = "".join(i for i in word if ord(i)<126 and ord(i)>31)
+  
 
     WordLetters = (''.join(sorted(set(word))))
     WordLetterslist = []
@@ -83,7 +114,7 @@ def main():
         WordCheck(WordLetterslist, guess, word, WordLetters, GuessHistory, AttemptCount-1)
         DrawGameBoard(GuessHistory, AttemptCount)
     
-    GameEndScreen(6, word)
+    GameEndScreen(7, word)
 
 
 #This is so we can import the functions in this program in other code without having to run the main function
