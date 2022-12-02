@@ -47,7 +47,7 @@ def WordCheck(WordLetterslist, guess, word, WordLetters, GuessHistory, index, Ga
                 ColorCount += 1
 
         for n in range(0, 5):
-            if (WordLetters[k] in guess) == True and (ColorLimit > ColorCount) and guess[n] == WordLetters[k] and (("32mp" in GuessHistory[index][n]) == False):
+            if (WordLetters[k] in guess) == True and (ColorLimit > ColorCount) and guess[n] == WordLetters[k] and (("32m" in GuessHistory[index][n]) == False):
                 GuessHistory[index][n] = str(f"{bcolors.YELLOW}{GuessHistory[index][n]}{bcolors.ENDC}")
                 GameSquares[index][n] = str(f"{bcolors.YELLOW}▯{bcolors.ENDC}")
                 ColorCount += 1
@@ -63,6 +63,8 @@ def WordFromUser(WordHistory, GuessHistory, AttemptCount):
     guess = input(":")
     error = True
     while error == True:
+        guess = (guess.lower()).replace(" ", "")
+        #guess = guess.lower()
         if len(guess) != 5:
             # Clearing the Screen
             os.system('cls')
@@ -105,8 +107,7 @@ def DrawGameBoard(GuessHistory, AttemptCount):
         print("      ▯▯▯▯▯")
 
     for letter in Alphabet:
-        """print(letter)
-        print(letter in (item for sublist in GuessHistory for item in sublist))"""
+        
         if (f"{bcolors.GREEN}{letter}{bcolors.ENDC}" in (item for sublist in GuessHistory for item in sublist)) == True:
             #AlphabetFormatted[Alphabet.index(letter)] = (f"\x1b[32m{letter}\x1b[0m")
             AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREEN}{letter}{bcolors.ENDC}")
@@ -116,7 +117,7 @@ def DrawGameBoard(GuessHistory, AttemptCount):
         elif (letter in (item for sublist in GuessHistory for item in sublist)) == True:
             #AlphabetFormatted[Alphabet.index(letter)] = (f"\x1b[2m{letter}\x1b[0m")
             AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREY}{letter}{bcolors.ENDC}")
-    
+        
     counter = 1
     for letter in AlphabetFormatted:
         print(letter, end=" ")
@@ -153,7 +154,7 @@ def GameEndScreen(AttemptCount, word, GameSquares):
 
 def GetWord():
     word = random_line()
-    word = "right"
+    word = "error"
     word = "".join(i for i in word if ord(i)<126 and ord(i)>31)
   
     WordLetters = (''.join(sorted(set(word))))
@@ -162,6 +163,7 @@ def GetWord():
     for n in range(0,len(WordLetters)):
         WordLetterslist.append([i for i, ltr in enumerate(word) if ltr == WordLetters[n]])
 
+    #print(WordLetterslist)
     return WordLetters, WordLetterslist, word
 
 
@@ -170,13 +172,13 @@ def main():
     WordHistory = []
     #List of words (Color+Formatting)
     GuessHistory = []
-
+    #List of endgame squares
     GameSquares = [["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"]]
 
-    
-        
-    print()
-
+    print("How To Play:")
+    print("•Guess the Wordle in 6 tries.")
+    print("•Each guess must be a valid 5-letter word.")
+    print("•The color of the letters will change to show how close your guess was to the word.")
     print(f"{bcolors.GREEN}Welcome to Wordle enter a word{bcolors.ENDC}")
 
     WordLetters, WordLetterslist, word = GetWord()
@@ -188,8 +190,8 @@ def main():
         # Clearing the Screen
         os.system('cls')
         DrawGameBoard(GuessHistory, AttemptCount)
-        #print(GuessHistory)
-
+        #print(WordLetters)
+     
     GameEndScreen(-1, word, GameSquares)
 
 
