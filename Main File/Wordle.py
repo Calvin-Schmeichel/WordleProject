@@ -154,7 +154,7 @@ def GameEndScreen(AttemptCount, word, GameSquares):
 
 def GetWord():
     word = random_line()
-    word = "error"
+    word = "right"
     word = "".join(i for i in word if ord(i)<126 and ord(i)>31)
   
     WordLetters = (''.join(sorted(set(word))))
