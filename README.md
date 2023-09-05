@@ -14,57 +14,56 @@ We import the "random" library so we can pick a random word for the answer
 We import the "csv" library so we can read and import words from the .csv files
 We import the "os" library so we can clear the terminal screen to avoid clutter during gameplay
 
-import random
-import csv
-import os
-
-random_line
+    import random
+    import csv
+    import os
+    import random_line
 
 The "random_line" function gets a random word to use as the answer for the game. We first open the .csv file. Then set the variable "line" to the “next” function so we can grab the next word in the file. The for loop randomly grabs a word from the file (NOTE: I got the syntax for this if statement from stackoverflow). Finally we close the file and return the chosen word to the main function.
 
-def random_line():
+    def random_line():
 
 
-    inputFile = open("possiblewords.csv", "r")
-    line = next(inputFile)
+        inputFile = open("possiblewords.csv", "r")
+        line = next(inputFile)
 
 
-    for num, aline in enumerate(inputFile, 2):
-        if random.randrange(num):
-            continue
+        for num, aline in enumerate(inputFile, 2):
+            if random.randrange(num):
+                continue
 
 
-        line = aline
+            line = aline
 
 
-    inputFile.close()
-    return line
+        inputFile.close()
+        return line
 
 # ValidWord
 
 The "ValidWord" function takes the word guessed by the player and makes sure it is a real five letter word in the english dictionary. It first uses the open loop from the "csv" library (Mentioned above), then stores the words in the reader variable to then use a nested for loop to manually check for a match (NOTE: I got the syntax for this for loop statement from stackoverflow).
 
-def ValidWord(Guess):
+    def ValidWord(Guess):
    
-    with open('validwords.csv', 'rt') as f:
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            for field in row:
-                if field == Guess:
-                    return True    
-    return False
+        with open('validwords.csv', 'rt') as f:
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                for field in row:
+                    if field == Guess:
+                        return True    
+        return False
 
 # bcolors
 
 The "bcolors" class  uses "ANSI escape sequences" for color formatting text in the terminal. This mainly helps for readability. For example "GREEN" rather than "\u001b[32m". (NOTE: I got the information on ANSI escape sequences and the syntax for this for class from stackoverflow).
 
-class bcolors:
-    #This mainly helps for readability of "GREEN" rather then "\u001b[32m"
-    GREEN = '\u001b[32m'
-    YELLOW = '\u001b[33m'
-    GREY = '\u001b[2m'
-    ENDC = '\033[0m'
-    RED = '\033[91m'
+    class bcolors:
+        #This mainly helps for readability of "GREEN" rather then "\u001b[32m"
+        GREEN = '\u001b[32m'
+        YELLOW = '\u001b[33m'
+        GREY = '\u001b[2m'
+        ENDC = '\033[0m'
+        RED = '\033[91m'
 
 # WordCheck
 
@@ -80,105 +79,96 @@ Loop variables to note:
 "k" =  list of letter indexes
 "n" = index of letter
 
-for k in range(0, len(WordLetterslist)):
+    for k in range(0, len(WordLetterslist)):
 
 Instead of looping by index 0-4 to compare the answer and the players guess (Which was the original approach). The function will loop by unique letters in the answer. This way we address all of the known edge cases. Such as too many yellow letters, yellow letters overriding green letters and more. We do this by keeping track of the number of times we print a yellow/green letter in ColorCount and always make sure it is less than or equal to ColorLimit which is the number of times that letter is used in the answer.
 
-ColorLimit = len(WordLetterslist[k])
-ColorCount = 0
+    ColorLimit = len(WordLetterslist[k])
+    ColorCount = 0
 
 The function uses for loops for checking green and yellow letters. We first start with green. We have the list of indexes of the current letter and we use those to compare the letter values in the answer and in the player's guess. If they are the same we can print green (And add one to color count). If not we do nothing.
 
-for n in range(0, len(WordLetterslist[k])):
-
-
-if word[WordLetterslist[k][n]] == guess[WordLetterslist[k][n]]:
-
-
-GuessHistory[index][WordLetterslist[k][n]] = str(f"{bcolors.GREEN}{GuessHistory[index][WordLetterslist[k][n]]}{bcolors.ENDC}")
-
-
-GameSquares[index][WordLetterslist[k][n]] = str(f"{bcolors.GREEN}▯{bcolors.ENDC}")
-ColorCount += 1
+    for n in range(0, len(WordLetterslist[k])):
+    
+        if word[WordLetterslist[k][n]] == guess[WordLetterslist[k][n]]:
+        
+            GuessHistory[index][WordLetterslist[k][n]] = str(f"{bcolors.GREEN}{GuessHistory[index][WordLetterslist[k][n]]}{bcolors.ENDC}")
+        
+            GameSquares[index][WordLetterslist[k][n]] = str(f"{bcolors.GREEN}▯{bcolors.ENDC}")
+            ColorCount += 1
 
 Then the function uses the second for loop to check for yellow letters. We use the same index logic as above for getting the unique letters in the answer but instead of checking if they are in the same position we are just checking if they are contained in the players guess or not. A few conditions must be met before a letter can be changed to yellow:
 
  The letter must be in the answer
  The letter must not already be green
-The color count for this letter must be below the limit (We can't print the letter yellow more then the amount of times it shows up in the answer)
+ The color count for this letter must be below the limit (We can't print the letter yellow more then the amount of times it shows up in the answer)
 
 If all of these conditions are met we can print the letter as yellow.
 
-for n in range(0, 5):
-
-
-if (WordLetters[k] in guess) == True 
-    and (ColorLimit > ColorCount) 
-    and guess[n] == WordLetters[k] 
-    and (("32m" in GuessHistory[index][n]) == False):
-                
-GuessHistory[index][n] = str(f"{bcolors.YELLOW}{GuessHistory[index][n]}{bcolors.ENDC}")
-                
-GameSquares[index][n] = str(f"{bcolors.YELLOW}▯{bcolors.ENDC}")
-                
-ColorCount += 1
+    for n in range(0, 5):
+    
+    
+    if (WordLetters[k] in guess) == True and (ColorLimit > ColorCount) and guess[n] == WordLetters[k] and (("32m" in GuessHistory[index][n]) == False):
+                        
+        GuessHistory[index][n] = str(f"{bcolors.YELLOW}{GuessHistory[index][n]}{bcolors.ENDC}")
+                        
+        GameSquares[index][n] = str(f"{bcolors.YELLOW}▯{bcolors.ENDC}")
+                        
+        ColorCount += 1
 
 
 This function also has a check at the end that makes sure if the player guessed the word correctly it will end the game early.
 
-if guess == word:
-        os.system('cls')
-        DrawGameBoard(GuessHistory, index+1)
-        GameEndScreen(index+1, word, GameSquares)
+    if guess == word:
+            os.system('cls')
+            DrawGameBoard(GuessHistory, index+1)
+            GameEndScreen(index+1, word, GameSquares)
 
 # WordFromUser
 
 The "WordFromUser" function gets an input from the user and makes sure it is a valid input. It first stores the user's input into the guess variable. Then starts the error detection while loop to make sure it is in fact a good input. 
 
-def WordFromUser(WordHistory, GuessHistory, AttemptCount):
-    guess = input(":")
-    error = True
-    while error == True:
+    def WordFromUser(WordHistory, GuessHistory, AttemptCount):
+        guess = input(":")
+        error = True
+        while error == True:
 
 We then strip the formatting from the users input:
 
- guess = (guess.lower()).replace(" ", "")
+     guess = (guess.lower()).replace(" ", "")
 
-If the users input is:
+If the users input is a five letter word:
 
-A five letter word:
-
-if len(guess) != 5:
-            os.system('cls')
-            DrawGameBoard(GuessHistory, AttemptCount-1)
-            print(f"{bcolors.RED}'{guess}' is not a 5 letter word{bcolors.ENDC}")
-            guess = input(":")
+    if len(guess) != 5:
+                os.system('cls')
+                DrawGameBoard(GuessHistory, AttemptCount-1)
+                print(f"{bcolors.RED}'{guess}' is not a 5 letter word{bcolors.ENDC}")
+                guess = input(":")
 
 A word the player has not guessed yet:
 
-elif (guess in WordHistory) == True:
-            os.system('cls')
-            DrawGameBoard(GuessHistory, AttemptCount-1)
-            print(f"{bcolors.RED}'{guess}' already used{bcolors.ENDC}")
-            guess = input(":")
+    elif (guess in WordHistory) == True:
+                os.system('cls')
+                DrawGameBoard(GuessHistory, AttemptCount-1)
+                print(f"{bcolors.RED}'{guess}' already used{bcolors.ENDC}")
+                guess = input(":")
 
 A real word in the english language:
 
-elif (ValidWord(guess)) == False:
-            os.system('cls')
-            DrawGameBoard(GuessHistory, AttemptCount-1)
-            print(f"{bcolors.RED}'{guess}' is not a real word{bcolors.ENDC}")
-            guess = input(":")
+    elif (ValidWord(guess)) == False:
+                os.system('cls')
+                DrawGameBoard(GuessHistory, AttemptCount-1)
+                print(f"{bcolors.RED}'{guess}' is not a real word{bcolors.ENDC}")
+                guess = input(":")
 
 Then we can return the guess to the main function knowing it is a good input. If not we loop till it is.
 
     else:    
-error = False
+        error = False
 
 
-WordHistory.append(guess)
-GuessHistory.append(list(guess))
-
+    WordHistory.append(guess)
+    GuessHistory.append(list(guess))
 
     return guess
 
@@ -190,39 +180,37 @@ The "DrawGameBoard" function draws the game board to the screen whenever called 
 
 It first will print all of the players guesses to the screen and then after print the remaining unused guess’s as blank ASCII squares.
 
-for k in range (0,AttemptCount):
-        print("      ", end = "")
+    for k in range (0,AttemptCount):
+            print("      ", end = "")
+            for n in range(0,5):
+                print(GuessHistory[k][n], end = "")
+            print()
 
 
-        for n in range(0,5):
-            print(GuessHistory[k][n], end = "")
-        print()
-
-
-for n in range(0, 6 - AttemptCount):
-        print("      ▯▯▯▯▯")
+    for n in range(0, 6 - AttemptCount):
+            print("      ▯▯▯▯▯")
 
 Once all of the guesses are printed. The function will then print the alphabet to the screen in the QWERTY keyboard format (Same order as your keyboard). It will loop through every letter in the alphabet and compare it to the color formatted guesses in the player's GuessHistory. If the letter shows up as green or yellow it will print accordingly (Green having priority over yellow. If it finds the letter as white then it will print the yellow as a dark gray to indicate the letter has been used. Otherwise the letter will be printed as the default format indicating it has not been used yet in a guess.
 
-for letter in Alphabet:
-
-
-if (f"{bcolors.GREEN}{letter}{bcolors.ENDC}" in (item for sublist 
-in GuessHistory for item in sublist)) == True:
-
-
-AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREEN}{letter}{bcolors.ENDC}")
-
-
-elif (f"{bcolors.YELLOW}{letter}{bcolors.ENDC}" in (item for sublist in GuessHistory for item in sublist)) == True:
-            
-AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.YELLOW}{letter}{bcolors.ENDC}")
-
-
-elif (letter in (item for sublist in GuessHistory for item in sublist)) == True:
-
-
-AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREY}{letter}{bcolors.ENDC}")
+    for letter in Alphabet:
+    
+    
+    if (f"{bcolors.GREEN}{letter}{bcolors.ENDC}" in (item for sublist 
+    in GuessHistory for item in sublist)) == True:
+    
+    
+    AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREEN}{letter}{bcolors.ENDC}")
+    
+    
+    elif (f"{bcolors.YELLOW}{letter}{bcolors.ENDC}" in (item for sublist in GuessHistory for item in sublist)) == True:
+                
+    AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.YELLOW}{letter}{bcolors.ENDC}")
+    
+    
+    elif (letter in (item for sublist in GuessHistory for item in sublist)) == True:
+    
+    
+    AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREY}{letter}{bcolors.ENDC}")
    
 
 Once all of the letters are saved in the correct color formatt. The function will then print them to the screen, returning a new line twice (Using the counter variable) to match the three rows on the keyboard.
