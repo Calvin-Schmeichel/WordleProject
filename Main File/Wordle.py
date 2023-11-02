@@ -251,7 +251,7 @@ def GetWord():
     #We first get a random word from the random line function
     word = random_line()
     #For testing purposes
-    word = "right"
+    #word = "right"
 
     #This removes any formatting from the answer string
     #I got the syntax for this section from stackoverflow
