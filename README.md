@@ -1,7 +1,3 @@
-# WordleProject
-
-CYB 267 | Schmeichel_Calvin | tz5432sp | Wordle Program
-
 “Wordle” Documentation
 
 This is a short document that will cover all of the functions and processes of the Wordle game for Python.
@@ -19,7 +15,7 @@ We import the "os" library so we can clear the terminal screen to avoid clutter 
     import os
     import random_line
 
-The "random_line" function gets a random word to use as the answer for the game. We first open the .csv file. Then set the variable "line" to the “next” function so we can grab the next word in the file. The for loop randomly grabs a word from the file (NOTE: I got the syntax for this if statement from stackoverflow). Finally we close the file and return the chosen word to the main function.
+The "random_line" function gets a random word to use as the answer for the game. We first open the .csv file. Then set the variable "line" to the “next” function so we can grab the next word in the file. The for loop randomly grabs a word from the file. Finally we close the file and return the chosen word to the main function.
 
     def random_line():
 
@@ -41,7 +37,7 @@ The "random_line" function gets a random word to use as the answer for the game.
 
 # ValidWord
 
-The "ValidWord" function takes the word guessed by the player and makes sure it is a real five letter word in the english dictionary. It first uses the open loop from the "csv" library (Mentioned above), then stores the words in the reader variable to then use a nested for loop to manually check for a match (NOTE: I got the syntax for this for loop statement from stackoverflow).
+The "ValidWord" function takes the word guessed by the player and makes sure it is a real five letter word in the english dictionary. It first uses the open loop from the "csv" library (Mentioned above), then stores the words in the reader variable to then use a nested for loop to manually check for a match.
 
     def ValidWord(Guess):
    
@@ -55,7 +51,7 @@ The "ValidWord" function takes the word guessed by the player and makes sure it 
 
 # bcolors
 
-The "bcolors" class  uses "ANSI escape sequences" for color formatting text in the terminal. This mainly helps for readability. For example "GREEN" rather than "\u001b[32m". (NOTE: I got the information on ANSI escape sequences and the syntax for this for class from stackoverflow).
+The "bcolors" class  uses "ANSI escape sequences" for color formatting text in the terminal. This mainly helps for readability. For example "GREEN" rather than "\u001b[32m".
 
     class bcolors:
         #This mainly helps for readability of "GREEN" rather then "\u001b[32m"
@@ -215,7 +211,7 @@ Once all of the guesses are printed. The function will then print the alphabet t
 
 Once all of the letters are saved in the correct color formatt. The function will then print them to the screen, returning a new line twice (Using the counter variable) to match the three rows on the keyboard.
 
-counter = 1
+    counter = 1
     for letter in AlphabetFormatted:
         print(letter, end=" ")
         counter+=1
@@ -245,62 +241,60 @@ if AttemptCount != -1:
 
 Finally the function will then print the players guess history to the screen as ascii squares to mimic the original world game. And call the exit function to stop the program.
 
-   for k in range (0,AttemptCount):
+       for k in range (0,AttemptCount):
         for n in range(0,5):
             print(GameSquares[k][n], end = "")
        
         print()
-    exit()
+        exit()
 
 # GetWord
 
 The "GetWord" function is used to remove any formatting from the answer string that was returned from the "random_line" function mentioned above. And then split the letters into the correct lists and store the indexes which will be used in the "WordCheck" function mentioned above.
 
-def GetWord():
-    word = random_line()
-    word = "".join(i for i in word if ord(i)<126 and ord(i)>31)
-    WordLetters = (''.join(sorted(set(word))))
-    WordLetterslist = []
+    def GetWord():
+        word = random_line()
+        word = "".join(i for i in word if ord(i)<126 and ord(i)>31)
+        WordLetters = (''.join(sorted(set(word))))
+        WordLetterslist = []
    
-for n in range(0,len(WordLetters)):
-WordLetterslist.append([i for i, ltr in enumerate(word) if ltr == WordLetters[n]])
+    for n in range(0,len(WordLetters)):
+    WordLetterslist.append([i for i, ltr in enumerate(word) if ltr == WordLetters[n]])
 
 
     return WordLetters, WordLetterslist, word
 
-NOTE: I got the syntax and use of the join, sorted and enumerate function from stack overflow.
 
-main
+# main
 
 This is the main function. It handles calling all the subfunctions, manages the game rounds and declares the initial variables.
 
 First the variables:
 
-def main():
+    def main():
 
 
-    WordHistory = []
-    GuessHistory = []
-    GameSquares = [["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"],
-                  ["▯","▯","▯","▯","▯"],
-                  ["▯","▯","▯","▯","▯"],
-                  ["▯","▯","▯","▯","▯"],
-                  ["▯","▯","▯","▯","▯"]]
+        WordHistory = []
+        GuessHistory = []
+        GameSquares = [["▯","▯","▯","▯","▯"],["▯","▯","▯","▯","▯"],
+                       ["▯","▯","▯","▯","▯"],
+                       ["▯","▯","▯","▯","▯"],
+                       ["▯","▯","▯","▯","▯"],
+                       ["▯","▯","▯","▯","▯"]]
 
 
-    print("How To Play:")
-    print("•Guess the Wordle in 6 tries.")
-    print("•Each guess must be a valid 5-letter word.")
-    print("•The color of the letters will change to show how close your guess 
-            was to the word.")
-    print(f"{bcolors.GREEN}Welcome to Wordle enter a word{bcolors.ENDC}")
+        print("How To Play:")
+        print("•Guess the Wordle in 6 tries.")
+        print("•Each guess must be a valid 5-letter word.")
+        print("•The color of the letters will change to show how close your guess was to the word.")
+        print(f"{bcolors.GREEN}Welcome to Wordle enter a word{bcolors.ENDC}")
 
 
-    WordLetters, WordLetterslist, word = GetWord()
+        WordLetters, WordLetterslist, word = GetWord()
 
 The main function then uses a for loop to run the 6 rounds of the game. Inside the loop it calls the correct subfunctions to run the game. If we don’t exit early that means the player has failed and it calls the "GameEndScreen" function mentioned above.
 
-for AttemptCount in range(1,7):
+    for AttemptCount in range(1,7):
         guess = WordFromUser(WordHistory,GuessHistory, AttemptCount)
         print()
         WordCheck(WordLetterslist, guess, word, WordLetters, 
@@ -313,14 +307,14 @@ for AttemptCount in range(1,7):
 
 Finally we use an if statement to import the functions in this program in other code without having to run the main function (Such as for unit testing).
 
-if __name__ == "__main__":
-    main()
+    if __name__ == "__main__":
+        main()
 
 # User Guide
 
 The next few sections will contain a quick tutorial on how to play the game.
 
-# Installation
+### Installation
 
 Make sure to install all of the required files from Calvin Schmeichel’s OneDrive at this link:
 
@@ -330,13 +324,13 @@ Once the “Wordle”  folder is downloaded make sure Python 3.10 is installed o
 
 https://www.python.org/downloads/
 
-# Startup
+### Startup
 
 Once both of those downloads are done, open your command prompt (Windows) or terminal (Linux/macOS) and open the “Wordle”  folder.  Then type  the following command without the quotation marks:
 
 “python3 ./wordV9.py”
 
-# Gameplay
+### Gameplay
  
 Once the program has started you should be greeted with a screen like this:
 ​​
