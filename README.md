@@ -350,6 +350,7 @@ Finally we use an if statement to import the functions in this program in other 
         main()
 ```
 
+<!--
 # User Guide
 
 The next few sections will contain a quick tutorial on how to play the game.
@@ -381,7 +382,7 @@ After that you are all set! Start guessing 5 letter words! If you miss-type anyt
 
 
 Keep playing until you guess the word!
-
+-->
 
 
 
