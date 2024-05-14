@@ -10,13 +10,16 @@ We import the "random" library so we can pick a random word for the answer
 We import the "csv" library so we can read and import words from the .csv files
 We import the "os" library so we can clear the terminal screen to avoid clutter during gameplay
 
+```python
     import random
     import csv
     import os
     import random_line
+```
 
 The "random_line" function gets a random word to use as the answer for the game. We first open the .csv file. Then set the variable "line" to the “next” function so we can grab the next word in the file. The for loop randomly grabs a word from the file. Finally we close the file and return the chosen word to the main function.
 
+```python
     def random_line():
 
 
@@ -34,11 +37,12 @@ The "random_line" function gets a random word to use as the answer for the game.
 
         inputFile.close()
         return line
-
+```
 # ValidWord
 
 The "ValidWord" function takes the word guessed by the player and makes sure it is a real five letter word in the english dictionary. It first uses the open loop from the "csv" library (Mentioned above), then stores the words in the reader variable to then use a nested for loop to manually check for a match.
 
+```python
     def ValidWord(Guess):
    
         with open('validwords.csv', 'rt') as f:
@@ -48,11 +52,13 @@ The "ValidWord" function takes the word guessed by the player and makes sure it 
                     if field == Guess:
                         return True    
         return False
+```
 
 # bcolors
 
 The "bcolors" class  uses "ANSI escape sequences" for color formatting text in the terminal. This mainly helps for readability. For example "GREEN" rather than "\u001b[32m".
 
+```python
     class bcolors:
         #This mainly helps for readability of "GREEN" rather then "\u001b[32m"
         GREEN = '\u001b[32m'
@@ -60,6 +66,7 @@ The "bcolors" class  uses "ANSI escape sequences" for color formatting text in t
         GREY = '\u001b[2m'
         ENDC = '\033[0m'
         RED = '\033[91m'
+```
 
 # WordCheck
 
@@ -75,15 +82,20 @@ Loop variables to note:
 "k" =  list of letter indexes
 "n" = index of letter
 
+```python
     for k in range(0, len(WordLetterslist)):
+```
 
 Instead of looping by index 0-4 to compare the answer and the players guess (Which was the original approach). The function will loop by unique letters in the answer. This way we address all of the known edge cases. Such as too many yellow letters, yellow letters overriding green letters and more. We do this by keeping track of the number of times we print a yellow/green letter in ColorCount and always make sure it is less than or equal to ColorLimit which is the number of times that letter is used in the answer.
 
+```python
     ColorLimit = len(WordLetterslist[k])
     ColorCount = 0
+```
 
 The function uses for loops for checking green and yellow letters. We first start with green. We have the list of indexes of the current letter and we use those to compare the letter values in the answer and in the player's guess. If they are the same we can print green (And add one to color count). If not we do nothing.
 
+```python
     for n in range(0, len(WordLetterslist[k])):
     
         if word[WordLetterslist[k][n]] == guess[WordLetterslist[k][n]]:
@@ -92,6 +104,7 @@ The function uses for loops for checking green and yellow letters. We first star
         
             GameSquares[index][WordLetterslist[k][n]] = str(f"{bcolors.GREEN}▯{bcolors.ENDC}")
             ColorCount += 1
+```
 
 Then the function uses the second for loop to check for yellow letters. We use the same index logic as above for getting the unique letters in the answer but instead of checking if they are in the same position we are just checking if they are contained in the players guess or not. A few conditions must be met before a letter can be changed to yellow:
 
@@ -101,6 +114,7 @@ Then the function uses the second for loop to check for yellow letters. We use t
 
 If all of these conditions are met we can print the letter as yellow.
 
+```python
     for n in range(0, 5):
     
     
@@ -111,54 +125,67 @@ If all of these conditions are met we can print the letter as yellow.
         GameSquares[index][n] = str(f"{bcolors.YELLOW}▯{bcolors.ENDC}")
                         
         ColorCount += 1
-
+```
 
 This function also has a check at the end that makes sure if the player guessed the word correctly it will end the game early.
 
+```python
     if guess == word:
             os.system('cls')
             DrawGameBoard(GuessHistory, index+1)
             GameEndScreen(index+1, word, GameSquares)
+```
 
 # WordFromUser
 
 The "WordFromUser" function gets an input from the user and makes sure it is a valid input. It first stores the user's input into the guess variable. Then starts the error detection while loop to make sure it is in fact a good input. 
 
+```python
     def WordFromUser(WordHistory, GuessHistory, AttemptCount):
         guess = input(":")
         error = True
         while error == True:
+```
 
 We then strip the formatting from the users input:
 
+```python
      guess = (guess.lower()).replace(" ", "")
+```
 
 If the users input is a five letter word:
 
+```python
     if len(guess) != 5:
                 os.system('cls')
                 DrawGameBoard(GuessHistory, AttemptCount-1)
                 print(f"{bcolors.RED}'{guess}' is not a 5 letter word{bcolors.ENDC}")
                 guess = input(":")
+```
 
 A word the player has not guessed yet:
 
+```python
     elif (guess in WordHistory) == True:
                 os.system('cls')
                 DrawGameBoard(GuessHistory, AttemptCount-1)
                 print(f"{bcolors.RED}'{guess}' already used{bcolors.ENDC}")
                 guess = input(":")
+```
 
 A real word in the english language:
 
+```python
     elif (ValidWord(guess)) == False:
                 os.system('cls')
                 DrawGameBoard(GuessHistory, AttemptCount-1)
                 print(f"{bcolors.RED}'{guess}' is not a real word{bcolors.ENDC}")
                 guess = input(":")
+```
 
 Then we can return the guess to the main function knowing it is a good input. If not we loop till it is.
 
+```python
     else:    
         error = False
 
@@ -167,6 +194,7 @@ Then we can return the guess to the main function knowing it is a good input. If
     GuessHistory.append(list(guess))
 
     return guess
+```
 
 
 
@@ -176,6 +204,7 @@ The "DrawGameBoard" function draws the game board to the screen whenever called 
 
 It first will print all of the players guesses to the screen and then after print the remaining unused guess’s as blank ASCII squares.
 
+```python
     for k in range (0,AttemptCount):
             print("      ", end = "")
             for n in range(0,5):
@@ -185,9 +214,11 @@ It first will print all of the players guesses to the screen and then after prin
 
     for n in range(0, 6 - AttemptCount):
             print("      ▯▯▯▯▯")
+```
 
 Once all of the guesses are printed. The function will then print the alphabet to the screen in the QWERTY keyboard format (Same order as your keyboard). It will loop through every letter in the alphabet and compare it to the color formatted guesses in the player's GuessHistory. If the letter shows up as green or yellow it will print accordingly (Green having priority over yellow. If it finds the letter as white then it will print the yellow as a dark gray to indicate the letter has been used. Otherwise the letter will be printed as the default format indicating it has not been used yet in a guess.
 
+```python
     for letter in Alphabet:
     
     
@@ -207,10 +238,11 @@ Once all of the guesses are printed. The function will then print the alphabet t
     
     
     AlphabetFormatted[Alphabet.index(letter)] = str(f"{bcolors.GREY}{letter}{bcolors.ENDC}")
-   
+```
 
 Once all of the letters are saved in the correct color formatt. The function will then print them to the screen, returning a new line twice (Using the counter variable) to match the three rows on the keyboard.
 
+```python
     counter = 1
     for letter in AlphabetFormatted:
         print(letter, end=" ")
@@ -222,6 +254,7 @@ Once all of the letters are saved in the correct color formatt. The function wil
             print()
             print("  ", end="")
     print()
+```
 
 # GameEndScreen
 
@@ -229,6 +262,7 @@ The "GameEndScreen" function is only called when the game is finished.
 
 The function first uses a if statement to print a victory or defeat message to the screen.
 
+```python
 if AttemptCount != -1:
         print(f"{bcolors.GREEN}You guessed the word! in {AttemptCount} attempt(s)!       {bcolors.ENDC}")
 
@@ -247,11 +281,13 @@ Finally the function will then print the players guess history to the screen as 
        
         print()
         exit()
+```
 
 # GetWord
 
 The "GetWord" function is used to remove any formatting from the answer string that was returned from the "random_line" function mentioned above. And then split the letters into the correct lists and store the indexes which will be used in the "WordCheck" function mentioned above.
 
+```python
     def GetWord():
         word = random_line()
         word = "".join(i for i in word if ord(i)<126 and ord(i)>31)
@@ -263,7 +299,7 @@ The "GetWord" function is used to remove any formatting from the answer string t
 
 
     return WordLetters, WordLetterslist, word
-
+```
 
 # main
 
@@ -271,6 +307,7 @@ This is the main function. It handles calling all the subfunctions, manages the 
 
 First the variables:
 
+```python
     def main():
 
 
@@ -291,9 +328,11 @@ First the variables:
 
 
         WordLetters, WordLetterslist, word = GetWord()
+```
 
 The main function then uses a for loop to run the 6 rounds of the game. Inside the loop it calls the correct subfunctions to run the game. If we don’t exit early that means the player has failed and it calls the "GameEndScreen" function mentioned above.
 
+```python
     for AttemptCount in range(1,7):
         guess = WordFromUser(WordHistory,GuessHistory, AttemptCount)
         print()
@@ -309,6 +348,7 @@ Finally we use an if statement to import the functions in this program in other 
 
     if __name__ == "__main__":
         main()
+```
 
 # User Guide
 
